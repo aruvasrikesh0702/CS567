@@ -1,0 +1,91 @@
+# MusicPlayer.tstl
+
+# Import the SUT (System Under Test)
+import MusicPlayer
+
+# Define the maximum number of tracks in the playlist for testing
+MAX_TRACKS = 10
+
+# Define a pool of track names
+tracknames = ["Track1", "Track2", "Track3", "Track4", "Track5", "Track6", "Track7", "Track8", "Track9", "Track10"]
+
+# Initialize the MusicPlayer object
+<musicplayer> ::= MusicPlayer.MusicPlayer()
+
+# Actions to interact with the MusicPlayer
+
+# Add a track to the playlist
+<action>
+musicplayer.add_track(tracknames[<trackname_index>])
+<guard>
+len(musicplayer.playlist) < MAX_TRACKS
+
+# Remove a track from the playlist
+<action>
+musicplayer.remove_track(tracknames[<trackname_index>])
+
+# Play music
+<action>
+musicplayer.play()
+
+# Pause music
+<action>
+musicplayer.pause()
+
+# Play the next track
+<action>
+musicplayer.next_track()
+
+# Play the previous track
+<action>
+musicplayer.previous_track()
+
+# Shuffle the playlist
+<action>
+musicplayer.shuffle_playlist()
+
+# Adjust the volume
+<action>
+musicplayer.adjust_volume(<volume>)
+<volume> ::= int
+
+# Clear the playlist
+<action>
+musicplayer.clear_playlist()
+
+# Set a specific track
+<action>
+musicplayer.set_track(<track_index>)
+<track_index> ::= int
+
+# Add an album
+<action>
+musicplayer.add_album("Album", tracknames[:<trackname_index>])
+<guard>
+len(musicplayer.playlist) + <trackname_index> <= MAX_TRACKS
+
+# Remove an album
+<action>
+musicplayer.remove_album("Album")
+
+# Play an album
+<action>
+musicplayer.play_album("Album")
+
+# Properties to check for errors or unexpected states
+
+# Property: current track index should be within valid range or -1
+<property>
+musicplayer.current_track_index == -1 or (0 <= musicplayer.current_track_index < len(musicplayer.playlist))
+
+# Property: volume should be within 0 to 100
+<property>
+0 <= musicplayer.volume <= 100
+
+# Property: if playing, current track index should not be -1
+<property>
+not musicplayer.playing or musicplayer.current_track_index != -1
+
+# Property: playlist should not exceed MAX_TRACKS
+<property>
+len(musicplayer.playlist) <= MAX_TRACKS
